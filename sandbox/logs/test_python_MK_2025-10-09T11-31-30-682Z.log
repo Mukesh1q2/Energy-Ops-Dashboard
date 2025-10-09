@@ -1,0 +1,5 @@
+[2025-10-09T11:31:30.720Z] Starting secure script execution
+[2025-10-09T11:31:30.721Z] User: admin@optibid.com (admin)
+[2025-10-09T11:31:30.721Z] Sandbox Config: {"timeout":15000,"maxMemory":67108864,"maxOutputSize":524288}
+[2025-10-09T11:31:30.721Z] Script: test_python_MK
+[2025-10-09T11:31:30.731Z] ERROR: Script contains potentially dangerous code: import\s+(os|subprocess|socket|urllib|sys|ctypes)

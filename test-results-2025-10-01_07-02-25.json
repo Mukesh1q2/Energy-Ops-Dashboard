@@ -1,0 +1,112 @@
+[
+  {
+    "Name": "Server is responding",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "API endpoints are accessible",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Dark theme CSS is present",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Dark mode enabled by default",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Transmission page is disabled",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Enhanced Analytics component exists",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Enhanced Analytics imported in main page",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Process sheet API endpoint exists",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Intelligent column mapping is implemented",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Data type inference is implemented",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Dashboard KPI endpoint",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Activities endpoint",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Notifications endpoint",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Optimization archives endpoint",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Data sources API endpoint",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Autoplot endpoint exists",
+    "Message": "Response status code does not indicate success: 404 (Not Found).",
+    "Status": "ERROR"
+  },
+  {
+    "Name": "RMO charts component exists",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "DMO contract scheduling endpoint",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "DMO market bidding endpoint",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Excel upload guide exists",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Database client properly configured",
+    "Message": "",
+    "Status": "PASSED"
+  },
+  {
+    "Name": "Prisma schema exists",
+    "Message": "",
+    "Status": "PASSED"
+  }
+]

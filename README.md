@@ -1,0 +1,2 @@
+# Energy-Ops-Dashboard
+This project is a comprehensive and interactive Dashboard, a web application designed for the analysis and visualization of power market data in India. It is built as a   modern, full-stack application using Next.js, TypeScript, and a rich ecosystem of libraries to provide a   powerful and user-friendly experience.

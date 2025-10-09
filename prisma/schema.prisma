@@ -1,0 +1,463 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ElectricityData {
+  id                  String   @id @default(cuid())
+  time_period         DateTime
+  region              String
+  state               String
+  plant_id            String?
+  plant_name          String?
+  technology_type     String?
+  resource_type       String?
+  contract_name       String?
+  contract_type       String?
+  generation_mw       Float?
+  capacity_mw         Float?
+  demand_mw           Float?
+  price_rs_per_mwh    Float?
+  coal_receipts_tonnes Float?
+  coal_stock_tonnes   Float?
+  fgd_installed_mw    Float?
+  fgd_units_count     Int?
+  added_capacity_mw   Float?
+  geolocation_lat     Float?
+  geolocation_lon     Float?
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  @@index([time_period])
+  @@index([region, state])
+  @@index([technology_type])
+  @@index([contract_name])
+  @@index([plant_id])
+}
+
+model DMOGeneratorScheduling {
+  id                  String   @id @default(cuid())
+  time_period         DateTime
+  region              String
+  state               String
+  plant_id            String
+  plant_name          String
+  technology_type     String
+  contract_name       String?
+  scheduled_mw        Float
+  actual_mw           Float?
+  created_at          DateTime @default(now())
+  
+  @@index([time_period])
+  @@index([technology_type])
+  @@index([plant_id])
+  @@index([contract_name])
+}
+
+model DMOContractScheduling {
+  id                  String   @id @default(cuid())
+  time_period         DateTime
+  region              String
+  state               String
+  contract_name       String
+  contract_type       String
+  scheduled_mw        Float
+  actual_mw           Float?
+  cumulative_mw       Float?
+  created_at          DateTime @default(now())
+  
+  @@index([time_period])
+  @@index([contract_type])
+  @@index([contract_name])
+}
+
+model DMOMarketBidding {
+  id                  String   @id @default(cuid())
+  time_period         DateTime
+  region              String
+  state               String
+  plant_id            String
+  plant_name          String
+  market_type         String
+  bid_price_rs_per_mwh Float
+  bid_volume_mw       Float
+  clearing_price_rs_per_mwh Float?
+  cleared_volume_mw   Float?
+  created_at          DateTime @default(now())
+  
+  @@index([time_period])
+  @@index([market_type])
+  @@index([plant_id])
+}
+
+model UploadedFile {
+  id                String   @id @default(cuid())
+  filename          String
+  original_name     String
+  file_path         String
+  file_type         String   // json, csv, excel
+  file_size         Int
+  mime_type         String
+  status            String   // uploaded, processing, completed, error
+  processed_data    Json?   // For JSON files, store parsed data
+  error_message     String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  
+  @@index([file_type])
+  @@index([status])
+  @@index([created_at])
+}
+
+model DataSource {
+  id                String   @id @default(cuid())
+  name              String
+  type              String   // file, database, api
+  status            String   // connected, disconnected, error
+  config            Json     // Connection configuration
+  last_sync         DateTime?
+  record_count      Int?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  columns           DataSourceColumn[]
+  charts            DashboardChart[]
+
+  @@index([type])
+  @@index([status])
+}
+
+model DataSourceColumn {
+  id                String    @id @default(cuid())
+  data_source_id    String
+  dataSource        DataSource @relation(fields: [data_source_id], references: [id], onDelete: Cascade)
+  column_name       String
+  normalized_name   String
+  data_type         String
+  sample_values     Json?
+  expose_as_filter  Boolean   @default(false)
+  ui_filter_type    String?
+  label             String?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  @@index([data_source_id])
+}
+
+model DashboardChart {
+  id              String      @id @default(cuid())
+  dashboard_id    String
+  data_source_id  String
+  dataSource      DataSource  @relation(fields: [data_source_id], references: [id], onDelete: Cascade)
+  name            String
+  chart_config    Json
+  created_by      String
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  @@index([dashboard_id])
+  @@index([data_source_id])
+}
+
+model MappingProfile {
+  id              String      @id @default(cuid())
+  name            String
+  user_id         String
+  mappings        Json
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  @@index([user_id])
+}
+
+model DatabaseConnection {
+  id                String   @id @default(cuid())
+  name              String
+  type              String   // postgresql, mysql, mongodb
+  host              String
+  port              Int
+  database          String
+  username          String?
+  password          String?
+  status            String   // connected, disconnected, connecting, error
+  last_connected    DateTime?
+  connection_string String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  
+  @@index([type])
+  @@index([status])
+}
+
+model ApiEndpoint {
+  id                String   @id @default(cuid())
+  name              String
+  url               String
+  method            String   // GET, POST, PUT, DELETE
+  headers           Json?
+  status            String   // active, inactive, error
+  last_called       DateTime?
+  response_time     Int?    // in milliseconds
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  
+  @@index([method])
+  @@index([status])
+}
+
+model OptimizationResult {
+  id                  String   @id @default(cuid())
+  data_source_id      String
+  model_id            String
+  model_trigger_time  DateTime
+  time_period         DateTime
+  time_block          Int
+  technology_type     String
+  region              String
+  state               String
+  contract_type       String?
+  plant_name          String
+  contract_name       String?
+  dam_price           Float?
+  gdam_price          Float?
+  rtm_price           Float?
+  scheduled_mw        Float?
+  model_results_mw    Float?
+  optimization_status String   // success, failed, pending
+  solver_time_ms      Int?
+  objective_value     Float?
+  created_at          DateTime @default(now())
+  
+  @@index([data_source_id])
+  @@index([model_id])
+  @@index([time_period])
+  @@index([plant_name])
+  @@index([optimization_status])
+}
+
+model OptimizationModel {
+  id                  String   @id @default(cuid())
+  model_name          String
+  original_filename   String
+  file_path           String
+  model_type          String   // DMO, RMO, SO
+  uploaded_by         String   @default("admin")
+  uploaded_at         DateTime @default(now())
+  status              String   @default("active") // active, inactive, archived
+  syntax_valid        Boolean  @default(false)
+  validation_message  String?
+  file_size           Int
+  description         String?
+  version             Int      @default(1)
+  last_used_at        DateTime?
+  metadata            Json?    // Additional model metadata
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  jobRuns             JobRun[]
+  
+  @@index([model_type])
+  @@index([status])
+  @@index([uploaded_at])
+}
+
+model JobRun {
+  id                  String   @id @default(cuid())
+  job_id              String   @unique
+  model_type          String   // DMO, RMO, SO
+  model_id            String?  // Reference to OptimizationModel
+  optimizationModel   OptimizationModel? @relation(fields: [model_id], references: [id], onDelete: SetNull)
+  data_source_id      String
+  status              String   // pending, running, success, failed
+  progress            Int      @default(0) // 0-100
+  started_at          DateTime @default(now())
+  completed_at        DateTime?
+  error_message       String?
+  results_count       Int?
+  objective_value     Float?
+  solver_time_ms      Int?
+  triggered_by        String   @default("manual") // manual, scheduled
+  model_config        Json?    // Store model configuration parameters
+  log_file_path       String?  // Path to complete log file
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  logs                JobLog[]
+  
+  @@index([job_id])
+  @@index([model_type])
+  @@index([model_id])
+  @@index([data_source_id])
+  @@index([status])
+  @@index([started_at])
+}
+
+model JobLog {
+  id                  String   @id @default(cuid())
+  job_id              String
+  jobRun              JobRun   @relation(fields: [job_id], references: [job_id], onDelete: Cascade)
+  level               String   // INFO, WARNING, ERROR, DEBUG
+  message             String
+  timestamp           DateTime @default(now())
+  metadata            Json?    // Additional context
+  
+  @@index([job_id])
+  @@index([level])
+  @@index([timestamp])
+}
+
+model Notification {
+  id                  String   @id @default(cuid())
+  type                String   // alert, warning, update, info
+  category            String   // system, data, optimization, security
+  title               String
+  message             String
+  severity            String   // critical, high, medium, low
+  is_read             Boolean  @default(false)
+  is_archived         Boolean  @default(false)
+  action_url          String?  // URL to navigate when clicked
+  action_label        String?  // Label for action button
+  metadata            Json?    // Additional context
+  user_id             String?  // For user-specific notifications
+  created_at          DateTime @default(now())
+  read_at             DateTime?
+  
+  @@index([type])
+  @@index([category])
+  @@index([severity])
+  @@index([is_read])
+  @@index([user_id])
+  @@index([created_at])
+}
+
+model Activity {
+  id                  String   @id @default(cuid())
+  type                String   // data_upload, optimization, chart, system
+  action              String   // created, updated, deleted, executed
+  title               String
+  description         String?
+  entity_type         String?  // DataSource, JobRun, Chart, etc.
+  entity_id           String?
+  user_id             String?
+  status              String   // success, failed, pending
+  metadata            Json?    // Additional context
+  created_at          DateTime @default(now())
+  
+  @@index([type])
+  @@index([action])
+  @@index([entity_type])
+  @@index([user_id])
+  @@index([created_at])
+}
+
+model TestScript {
+  id                  String   @id @default(cuid())
+  script_name         String
+  original_filename   String
+  file_path           String
+  file_size           Int
+  uploaded_by         String   @default("admin")
+  uploaded_at         DateTime @default(now())
+  status              String   @default("active") // active, archived
+  description         String?
+  last_run_at         DateTime?
+  total_runs          Int      @default(0)
+  metadata            Json?    // Additional script metadata
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  executions          TestScriptExecution[]
+  
+  @@index([uploaded_at])
+  @@index([status])
+}
+
+model MarketSnapshotData {
+  id                  String   @id @default(cuid())
+  data_source_id      String?
+  time_period         DateTime
+  timeblock           Int      // 1-96 for 15-min intervals
+  dam_price           Float?   // Day-Ahead Market Price (Rs/kWh)
+  gdam_price          Float?   // Green DAM Price (Rs/kWh)
+  rtm_price           Float?   // Real-Time Market Price (Rs/kWh)
+  scheduled_mw        Float?   // Scheduled Volume (MW)
+  modelresult_mw      Float?   // Model Result MW (MCV)
+  purchase_bid_mw     Float?   // Purchase Bid (MW) - Optional
+  sell_bid_mw         Float?   // Sell Bid (MW) - Optional
+  state               String?
+  plant_name          String?
+  region              String?
+  contract_name       String?
+  metadata            Json?    // Additional data fields
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  
+  @@index([time_period])
+  @@index([timeblock])
+  @@index([data_source_id])
+  @@index([state])
+  @@index([plant_name])
+}
+
+model TestScriptExecution {
+  id                  String   @id @default(cuid())
+  execution_id        String   @unique
+  script_id           String
+  testScript          TestScript @relation(fields: [script_id], references: [id], onDelete: Cascade)
+  status              String   // running, completed, failed
+  started_at          DateTime @default(now())
+  completed_at        DateTime?
+  exit_code           Int?
+  error_message       String?
+  log_file_path       String?
+  output_lines        Int      @default(0)
+  runtime_ms          Int?
+  triggered_by        String   @default("manual")
+  metadata            Json?    // Additional execution metadata
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  logs                TestScriptLog[]
+  
+  @@index([execution_id])
+  @@index([script_id])
+  @@index([status])
+  @@index([started_at])
+}
+
+model TestScriptLog {
+  id                  String   @id @default(cuid())
+  execution_id        String
+  execution           TestScriptExecution @relation(fields: [execution_id], references: [execution_id], onDelete: Cascade)
+  line_number         Int
+  log_level           String   // stdout, stderr, info, warning, error
+  message             String
+  timestamp           DateTime @default(now())
+  
+  @@index([execution_id])
+  @@index([log_level])
+  @@index([timestamp])
+}
