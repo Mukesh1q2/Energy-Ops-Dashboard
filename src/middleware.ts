@@ -20,6 +20,11 @@ export default withAuth(
 // Protect all routes except:
 // - /auth/* (authentication pages)
 // - /api/auth/* (NextAuth API routes)
+// - /api/sandbox/* (sandbox API routes - no auth needed)
+// - /api/charts/* (chart API routes - no auth needed)
+// - /api/test-chart (test chart API - no auth needed)
+// - /api/health (health check)
+// - /api/socketio (Socket.IO WebSocket endpoint)
 // - /_next/* (Next.js internals)
 // - /favicon.ico, etc. (static files)
 export const config = {
@@ -28,10 +33,14 @@ export const config = {
      * Match all request paths except:
      * - /auth/* (authentication pages)
      * - /api/auth/* (NextAuth API routes)
+     * - /api/sandbox/* (sandbox API routes - no auth needed)
+     * - /api/charts/* (chart API routes - no auth needed)
+     * - /api/test-chart (test chart API - no auth needed)
+     * - /api/health (health check)
      * - /_next/static (static files)
      * - /_next/image (image optimization files)
      * - /favicon.ico, /robots.txt, etc. (static files)
      */
-    '/((?!auth|api/auth|_next/static|_next/image|favicon.ico|robots.txt).*)',
+    '/((?!auth|api/auth|api/sandbox|api/charts|api/test-chart|api/health|api/socketio|sandbox|_next/static|_next/image|favicon.ico|robots.txt).*)',
   ],
 }

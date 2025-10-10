@@ -4,10 +4,11 @@ import { SandboxEnhanced } from "@/components/sandbox-enhanced"
 import { ModelUploadCard } from "@/components/optimization/model-upload-card"
 import { OptimizationControlPanel } from "@/components/optimization/control-panel"
 import { LogNotificationPanel } from "@/components/optimization/log-notification-panel"
-import { TestScriptUpload } from "@/components/sandbox/test-script-upload"
-import { TestScriptLogs } from "@/components/sandbox/test-script-logs"
+import { UnifiedSandbox } from "@/components/sandbox/unified-sandbox"
+import TechnologyGenerationChart from "@/components/charts/technology-generation-chart"
+import DynamicOutputCharts from "@/components/charts/dynamic-output-charts"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Rocket, TestTube, FlaskConical } from "lucide-react"
+import { Rocket, TestTube, FlaskConical, BarChart3 } from "lucide-react"
 
 export default function SandboxPage() {
   return (
@@ -20,10 +21,14 @@ export default function SandboxPage() {
       </div>
 
       <Tabs defaultValue="optimization" className="w-full">
-        <TabsList className="grid w-full max-w-2xl grid-cols-3">
+        <TabsList className="grid w-full max-w-3xl grid-cols-4">
           <TabsTrigger value="optimization" className="flex items-center gap-2">
             <Rocket className="h-4 w-4" />
             Optimization
+          </TabsTrigger>
+          <TabsTrigger value="charts" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Charts
           </TabsTrigger>
           <TabsTrigger value="test-scripts" className="flex items-center gap-2">
             <FlaskConical className="h-4 w-4" />
@@ -46,12 +51,18 @@ export default function SandboxPage() {
           <LogNotificationPanel />
         </TabsContent>
 
+        <TabsContent value="charts" className="space-y-6 mt-6">
+          {/* Dynamic Output Charts */}
+          <DynamicOutputCharts 
+            outputDir="202504031402" 
+            autoRefresh={false}
+            refreshInterval={30000}
+          />
+        </TabsContent>
+
         <TabsContent value="test-scripts" className="space-y-6 mt-6">
-          {/* Test Script Upload and Management */}
-          <TestScriptUpload />
-          
-          {/* Real-Time Test Script Logs */}
-          <TestScriptLogs />
+          {/* Unified Sandbox Component */}
+          <UnifiedSandbox />
         </TabsContent>
 
         <TabsContent value="testing" className="mt-6">
